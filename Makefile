@@ -1,5 +1,10 @@
 SHELL=/bin/bash -o pipefail
 
+ifndef $(GOPATH)
+    GOPATH=$(shell go env GOPATH)
+    export GOPATH
+endif
+
 OUTPUT_IMAGE_OS ?= linux
 OUTPUT_IMAGE_ARCH ?= amd64
 
@@ -166,7 +171,7 @@ $(GOPATH)/bin/staticfiles:
 
 server/static/files.go: $(GOPATH)/bin/staticfiles ui/dist/app/index.html
 	# Pack UI into a Go file.
-	staticfiles -o server/static/files.go ui/dist/app
+	$(GOPATH)/bin/staticfiles -o server/static/files.go ui/dist/app
 
 dist/argo-linux-amd64: GOARGS = GOOS=linux GOARCH=amd64
 dist/argo-darwin-amd64: GOARGS = GOOS=darwin GOARCH=amd64
